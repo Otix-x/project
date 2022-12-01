@@ -1,0 +1,36 @@
+#ifndef QUEUE_H_INCLUDED
+#define QUEUE_H_INCLUDED
+
+/**
+ * @brief Cấu trúc của một node trong queue
+ * @param data Giá trị của node
+ * @param next Con trỏ trỏ đến node tiếp theo
+ */
+ 
+struct QueueNode{
+	int data;
+	struct QueueNode *next;
+};
+
+/**
+ * @brief Cấu trúc của queue
+ * @param front Con trỏ trỏ đến node đầu tiên trong queue
+ * @param rear Con trỏ trỏ đến node cuối cùng trong queue
+ */
+struct Queue{
+	struct QueueNode *front;
+    struct QueueNode *rear;
+};
+
+struct Queue* createQueue();
+struct QueueNode* createQueueNode(int data);
+void enqueue(struct Queue* queue,int data);
+void dequeue(struct Queue* queue);
+int getFront(struct Queue* queue);
+void printQueue(struct Queue* queue);
+int isEmpty();
+
+
+
+
+#endif // QUEUE_H_INCLUDED
