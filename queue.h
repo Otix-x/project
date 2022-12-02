@@ -25,7 +25,7 @@ struct Queue{
 struct Queue* createQueue();
 struct QueueNode* createQueueNode(int data);
 void enqueue(struct Queue* queue,int data);
-void dequeue(struct Queue* queue);
+int dequeue(struct Queue* queue);
 int getFront(struct Queue* queue);
 void printQueue(struct Queue* queue);
 int isEmpty();

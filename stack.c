@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "stack.h"
 
 
@@ -33,17 +34,16 @@ void push(int data){
  * 
  * @return Phần tử đầu tiên trong stack
  */
-int pop(){
+void pop(){
     if(pTop == NULL){
         printf("\nStack Underflow");
-        return -1;
+        exit(1);
     }
     else{
         struct stackNode *temp = pTop;
         int data = temp->data;
         pTop = pTop->prev;
         free(temp);
-        return data;
     }
 }
 

@@ -2,5 +2,6 @@
     "C_Cpp.errorSquiggles": "disabled",
     "files.associations": {
         "cstdio": "c"
-    }
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/bomay"
 }

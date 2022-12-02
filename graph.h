@@ -3,8 +3,8 @@
 
 struct Node {
     int vertex;
-    struct node *next;
-    struct node *prev;
+    struct Node *next;
+    struct Node *prev;
 };
 
 struct Graph {
@@ -22,7 +22,7 @@ void printGraph(struct Graph* graph, FILE* f);
 void BFS(struct Graph* graph,int startVertex, int numVertices, FILE* f);
 void DFS(struct Graph* graph,int startVertex, int numVertices, FILE* f);
 void deleteVertex(struct Graph* graph,int vertex);
-void checkCover(struct Graph* graph, FILE* f);
+int checkCover(struct Graph* graph, FILE* f);
 
 
 #endif // GRAPH_H_INCLUDED

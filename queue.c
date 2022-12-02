@@ -64,10 +64,10 @@ void enqueue(struct Queue* queue,int data){
  */
 
  
-void dequeue(struct Queue *queue){
-	if(queue->rear==NULL){
+int dequeue(struct Queue *queue){
+	if(queue -> front==NULL){
 		printf("\nQueue is empty!!!!");
-        return;
+        exit(1);
 	}
 	else{
 		struct QueueNode *temp=queue->front;
@@ -75,9 +75,9 @@ void dequeue(struct Queue *queue){
 	    if(queue->front==NULL){
 	    	queue->rear=NULL;
 	    }
-        int data=temp->data;
+        int Front=temp->data;
 	    free(temp);
-        return data;
+        return Front;
 	}
 }
 

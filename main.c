@@ -29,21 +29,6 @@ void sub_menu(char filechoice[]){
     printf("Press other key to back to MAIN MENU\n");
 }
 
-// Hàm bỏ qua các dòng dữ liệu không cần thiết
-int ignoreLine(FILE *f){
-    int c;
-    while(c = fgetc(f), c != '\n' && c != EOF);
-    return c;
-}
-
-// Hàm bỏ qua các dòng comment
-void ignoreComments(FILE *f){
-    int c;
-    while(c = fgetc(f), c == '#'){
-        ignoreLine(f);
-    }
-    ungetc(c,f);
-}
 
 int main(){
 

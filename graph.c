@@ -1,7 +1,24 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "graph.h"
 #include "stack.h"
 #include "queue.h"
+
+// Hàm bỏ qua các dòng dữ liệu không cần thiết
+int ignoreLine(FILE *f){
+    int c;
+    while(c = fgetc(f), c != '\n' && c != EOF);
+    return c;
+}
+
+// Hàm bỏ qua các dòng comment
+void ignoreComments(FILE *f){
+    int c;
+    while(c = fgetc(f), c == '#'){
+        ignoreLine(f);
+    }
+    ungetc(c,f);
+}
 
 /**
  * @brief Hàm createNode() tạo một node mới với giá trị là vertex
@@ -62,6 +79,7 @@ void addEdge(struct Graph* graph,int src,int dest){
         graph->rear[src] = newNode;
     }
     else{
+        newNode->prev = graph->rear[src];
         graph->rear[src]->next = newNode;
         graph->rear[src] = newNode;
     }
@@ -191,7 +209,7 @@ void DFS(struct Graph* graph, int startVertex, int numVertices, FILE* filename){
     create();
 
     push(startVertex);
-    while(!isEmptyStack()){
+    while(isEmptyStack() == 0){
         int currentVertex = pTop -> data;
         pop();
         if(!visited[currentVertex]){
@@ -242,7 +260,7 @@ void deleteVertex(struct Graph* graph, int vertex){
 
         while(subVertex -> next){
             struct Node* nextVertex = subVertex -> next;
-            if(subVertex -> next ->next){
+            if(subVertex -> next -> next){
                 if(nextVertex -> vertex == vertex){
                     subVertex -> next -> vertex = nextVertex -> next -> vertex;
                     subVertex -> next = nextVertex -> next;
@@ -270,7 +288,7 @@ void deleteVertex(struct Graph* graph, int vertex){
  * @param graph Đồ thị
  * @param filename File chứa các đỉnh cần kiểm tra
  */
-void checkCover(struct Graph* graph, FILE* filename){
+int checkCover(struct Graph* graph, FILE* filename){
     ignoreComments(filename);
     char c;
     int vertex;
@@ -285,7 +303,8 @@ void checkCover(struct Graph* graph, FILE* filename){
     fclose(filename);
 
     for(int i = 0; i < graph ->numVertices; ++i){
-        if (graph -> head[i] != NULL) return 0;
+        if (graph -> head[i] != NULL) 
+        return 0;
     }
     return 1;
 }
