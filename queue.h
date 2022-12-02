@@ -9,7 +9,7 @@
  
 struct QueueNode{
 	int data;
-	struct QueueNode *next;
+	struct QueueNode* next;
 };
 
 /**
@@ -23,12 +23,11 @@ struct Queue{
 };
 
 struct Queue* createQueue();
-struct QueueNode* createQueueNode(int data);
 void enqueue(struct Queue* queue,int data);
 int dequeue(struct Queue* queue);
-int getFront(struct Queue* queue);
+int queueEmpty(struct Queue* queue);
 void printQueue(struct Queue* queue);
-int isEmpty();
+
 
 
 

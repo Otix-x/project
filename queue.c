@@ -14,22 +14,7 @@ struct Queue* createQueue(){
 	struct Queue *temp=(struct Queue*)malloc(sizeof(struct Queue));
 	temp->front=temp->rear=NULL;
 	return temp;
-}
 
-/**
- * @brief Hàm tạo một node mới trong hàng đợi với giá trị là data
- * 1. Cấp phát bộ nhớ cho node mới
- * 2. Gán giá trị cho node mới
- * 3. Trả về node mới
- *
- * @param data Giá trị của node mới
- * @return struct QueueNode* 
- */
-struct QueueNode* createQueueNode(int data){
-	struct QueueNode *newNode=(struct QueueNode*)malloc(sizeof(struct QueueNode));
-	newNode->data=data;
-	newNode->next=NULL;
-	return newNode;
 }
 
 /**
@@ -42,15 +27,19 @@ struct QueueNode* createQueueNode(int data){
  * @param data Giá trị của node mới
  */
  
-void enqueue(struct Queue* queue,int data){
-	struct QueueNode *newNode=createQueueNode(data);
-    if(queue->rear==NULL){
-    	queue->rear=queue->front=newNode;
+void enqueue(struct Queue* queue,int key){
+	struct QueueNode *temp = (struct QueueNode*)malloc(sizeof(struct QueueNode));
+	temp -> data = key;
+	temp -> next = NULL;
+
+    if(queue -> rear == NULL){
+    	queue -> front = queue -> rear = temp;
+		return;
     }
-    else{
-    	queue->rear->next=newNode;
-    	queue->rear=newNode;
-    }
+    
+    queue -> rear -> next = temp;
+    queue -> rear = temp;
+    
 }
 
 /**
@@ -65,39 +54,26 @@ void enqueue(struct Queue* queue,int data){
 
  
 int dequeue(struct Queue *queue){
-	if(queue -> front==NULL){
-		printf("\nQueue is empty!!!!");
-        exit(1);
-	}
-	else{
-		struct QueueNode *temp=queue->front;
-		queue->front=queue->front->next;
-	    if(queue->front==NULL){
-	    	queue->rear=NULL;
-	    }
-        int Front=temp->data;
-	    free(temp);
-        return Front;
-	}
+	if(queue -> front == NULL){
+		return -1;
+	}	
+	struct QueueNode *temp = queue -> front;
+	queue -> front = queue -> front -> next;
+    if(queue->front==NULL){
+    	queue->rear=NULL;
+    }
+    int Front = temp -> data;
+    free(temp);
+    return Front;
+	
 }
 
 /**
- * @brief Hàm getFront() 
- * @param queue Hàng đợi
- * @return int 
+ * @brief Hàm queueEmpty() kiểm tra xem hàng đợi có rỗng hay không
+ * 
  */
-int getFront(struct Queue* queue){
-    return queue->front->data;
-}
-
-/**
- * @brief Hàm isEmpty() kiểm tra hàng đợi có rỗng hay không
- * @param queue Hàng đợi
- * @return int 
- */
-int isEmpty(struct Queue *queue){
-    if(queue->front==NULL) return 1;
-    return 0;    
+int queueEmpty(struct Queue* queue){
+	return queue -> rear ==NULL;
 }
 
 /**
@@ -105,9 +81,9 @@ int isEmpty(struct Queue *queue){
  * @param queue Hàng đợi
  */
 void printQueue(struct Queue* queue){
-    struct QueueNode *temp=queue->front;
-    while(temp!=NULL){
+    struct QueueNode *temp = queue -> front;
+    while(temp){
         printf("%d ",temp->data);
-        temp=temp->next;
+        temp = temp -> next;
     }
 }

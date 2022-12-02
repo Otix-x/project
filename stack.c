@@ -17,12 +17,12 @@ void create(){
  */
 void push(int data){
     struct stackNode *temp = (struct stackNode*)malloc(sizeof(struct stackNode));
-    if(temp == NULL){
+    if(!temp){
         printf("\nHeap Overflow");
-        return;
+        exit(1);
     }
-    temp->data = data;
-    temp->prev = pTop;
+    temp -> data = data;
+    temp -> prev = pTop;
     pTop = temp;
 }
 
@@ -35,23 +35,25 @@ void push(int data){
  * @return Phần tử đầu tiên trong stack
  */
 void pop(){
+    struct stackNode *temp;
+
     if(pTop == NULL){
         printf("\nStack Underflow");
         exit(1);
     }
     else{
-        struct stackNode *temp = pTop;
-        int data = temp->data;
+        temp = pTop;
         pTop = pTop->prev;
+        temp->prev = NULL;
         free(temp);
     }
 }
 
 /**
- * @brief Hàm isEmptyStack() kiểm tra xem stack có rỗng hay không
+ * @brief Hàm stackEmpty() kiểm tra xem stack có rỗng hay không
  * 
  */
-int isEmptyStack(){
+int stackEmpty(){
     return pTop == NULL;
 }
 
@@ -68,8 +70,8 @@ void printStack(){
     else{
         temp = pTop;
         while(temp != NULL){
-            printf("%d ", temp->data);
-            temp = temp->prev;
+            printf("%d ", temp -> data);
+            temp = temp -> prev;
         }
     }
 }

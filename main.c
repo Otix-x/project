@@ -4,9 +4,10 @@
 #include "queue.h"
 #include "stack.h"
 
+void main_thread();
 void sub_menu(char filechoice[]);
 void sub_main(char input_file[], FILE* f1, FILE* f2, FILE* f3, FILE* f4);
-void main_thread();
+void buildGraph(struct Graph* graph, FILE* f);
 
 // Menu chính của chương trình
 void menu(){
@@ -37,80 +38,11 @@ int main(){
 
 }
 
-// 
-/**
- * @brief Hàm sub_main() thực hiện việc nạp dữ liệu từ file và thực hiện các chức năng chính
- * 
- * @param input_file File chứa dữ liệu đồ thị
- * @param f1 File outputBFS
- * @param f2 File outputDFS
- * @param f3 File outputVertexCover
- * @param f4 File outputGraph
- */
-void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
-   
-
-    FILE *input_graph = fopen(input_file, "r");
-    if (input_graph == NULL){
-        printf("Error: Cannot open file!\n");
-        exit(1);
-    }
-
-    // create a graph
-    printf("Creating graph...\n");
-    int numVertices = countVertices(input_file);
-    struct Graph* graph = createGraph(numVertices);
-    buildGraph(graph, input_graph);
-    printf("Graph created!\n");
-
-
-    while(1){
-        int choice, start;
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-        printf("Enter start vertex: ");
-        scanf("%d", &start);
-        switch(choice){
-            case 1:{
-                // Breadth First Search
-                printf("Breadth First Search\n");
-                printf("Start vertex: %d\n", start);
-                BFS(graph, start, numVertices, f1);
-                printf("BFS done!\n");
-                break;
-            }
-            case 2:{
-                // Depth First Search
-                printf("Depth First Search\n");
-                printf("Start vertex: %d\n", start);
-                DFS(graph, start, numVertices, f2);
-                printf("DFS done!\n");
-                break;
-            }
-            case 3:
-                // Check Vertex Cover
-                break;
-            case 4:{
-                // Print Graph
-                printf("Printing graph...\n");
-                printGraph(graph, f4);
-                printf("Graph printed!\n");
-                break;
-            }
-            default:
-                printf("Back to MAIN MENU\n");
-                main_thread();
-                break;
-        }
-    }
-    free(graph);
-}
-
 void main_thread(){
     menu();
     while(1){
         printf("Enter your choice: ");
-        int choice =0;
+        int choice ;
         scanf("%d", &choice);
         switch(choice){
             case 1: {
@@ -153,3 +85,86 @@ void main_thread(){
     }
 }
 
+/**
+ * @brief Hàm sub_main() thực hiện việc nạp dữ liệu từ file và thực hiện các chức năng chính
+ * 
+ * @param input_file File chứa dữ liệu đồ thị
+ * @param f1 File outputBFS
+ * @param f2 File outputDFS
+ * @param f3 File VertexCover.vc
+ * @param f4 File outputGraph
+ */
+void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
+    FILE *input_graph = fopen(input_file, "r");
+    if (input_graph == NULL){
+        printf("Error: Cannot open file!\n");
+        exit(1);
+    }
+
+    // create a graph
+    printf("Creating graph...\n");
+    int numVertices = countVertices(input_file);
+    struct Graph* graph = createGraph(numVertices);
+    buildGraph(graph, input_graph);
+    printf("Graph created!\n");
+
+
+    while(1){
+        int choice, start;
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch(choice){
+            case 1:{
+                // Breadth First Search
+                printf("Breadth First Search\n");
+                printf("Start vertex: \n");
+                scanf("%d",&start);
+                BFS(graph, start, numVertices, f1);
+                printf("BFS done!\n");
+                break;
+            }
+            case 2:{
+                // Depth First Search
+                printf("Depth First Search\n");
+                printf("Start vertex: \n");
+                scanf("%d",&start);
+                DFS(graph, start, numVertices, f2);
+                printf("DFS done!\n");
+                break;
+            }
+            case 3:{
+                // Check Vertex Cover
+                if (f3 == NULL){
+                    printf("\nError: Unable to open the file");
+                    exit(1);
+                }
+                printf("Check Vertex Cover\n");
+                FILE* temp_input_file = fopen(input_file, "r");
+                struct Graph* temp_graph = createGraph(numVertices);
+                buildGraph(temp_graph, temp_input_file);                
+                if (checkCover(temp_graph, f3)){
+                    printf("The graph is a vertex cover\n");
+                }
+                else{
+                    printf("The graph is not a vertex cover\n");
+                }
+                free(temp_graph);
+
+                break;
+            }
+                
+            case 4:{
+                // Print Graph
+                printf("Printing graph...\n");
+                printGraph(graph, f4);
+                printf("Graph printed!\n");
+                break;
+            }
+            default:
+                printf("Back to MAIN MENU\n");
+                main_thread();
+                break;
+        }
+    }
+    free(graph);
+}

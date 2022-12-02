@@ -16,7 +16,7 @@ struct stackNode* pTop;
 void create();
 void push(int data);
 void pop();
-int isEmptyStack();
+int stackEmpty();
 void printStack();
 
 

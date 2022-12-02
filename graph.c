@@ -30,7 +30,7 @@ void ignoreComments(FILE *f){
  * @return struct Node* 
  */
 struct Node* creatNode(int vertex){
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* newNode = malloc(sizeof(struct Node));
     newNode->vertex = vertex;
     newNode->next = NULL;
     newNode->prev = NULL;
@@ -48,11 +48,11 @@ struct Node* creatNode(int vertex){
  * @return struct Graph* 
  */
 struct Graph* createGraph(int numVertices){
-    struct Graph* graph = (struct Graph*)malloc(sizeof(struct Graph));
+    struct Graph* graph = malloc(sizeof(struct Graph));
     graph->numVertices = numVertices;
-    graph->head = (struct Node**)malloc(numVertices*sizeof(struct Node*));
-    graph->rear = (struct Node**)malloc(numVertices*sizeof(struct Node*));
-    for(int i=0;i<numVertices;i++){
+    graph->head = malloc(numVertices*sizeof(struct Node*));
+    graph->rear = malloc(numVertices*sizeof(struct Node*));
+    for(int i=0;i<numVertices;++i){
         graph->head[i] = NULL;
         graph->rear[i] = NULL;
     }
@@ -101,10 +101,7 @@ int countVertices(char filename[]){
     int numVertices;
     fscanf(f,"%d",&numVertices);
     int max = numVertices;
-    for(;fscanf(f,"%d",&numVertices)!=EOF;){
-        // Duyệt qua các cạnh của đồ thị để tìm đỉnh lớn nhất trong đồ thị để biết số đỉnh của đồ thị
-        if(numVertices>max) max = numVertices;
-    }
+    while(fscanf(f,"%d",&numVertices)==1) max = numVertices > max ? numVertices : max; 
     fclose(f);
     return max+1;   // Trả về số đỉnh của đồ thị + 1 (vì đỉnh bắt đầu từ 0)
 }
@@ -121,7 +118,7 @@ int countVertices(char filename[]){
 void buildGraph(struct Graph* graph, FILE* f){
     ignoreComments(f);
     int src, dest;
-    while(fscanf(f,"%d %d",&src,&dest)==2){
+    while(fscanf(f,"%d",&src) == 1, fscanf(f,"%d",&dest) == 1){
         addEdge(graph,src,dest);
         // addEdge(graph,dest,src);
     }
@@ -137,7 +134,7 @@ void buildGraph(struct Graph* graph, FILE* f){
 void printGraph(struct Graph* graph, FILE* filename){
     for(int vertex=0; vertex < graph->numVertices; ++vertex){
         struct Node* temp = graph->head[vertex];
-        fprintf(filename,"\nV%d: ",vertex);
+        fprintf(filename,"\nVertex %d: ",vertex);
         while(temp){
             fprintf(filename,"%d ",temp->vertex);
             temp = temp->next;
@@ -169,13 +166,13 @@ void BFS(struct Graph* graph, int startVertex, int numVertices, FILE* filename){
 
     visited[startVertex] = 1;
     enqueue(queue,startVertex);
-    while(!isEmpty(queue)){
+    while(!queueEmpty(queue)){
         int currentVertex = dequeue(queue);
-        fprintf(filename,"%d",currentVertex);
+        fprintf(filename,"%d ",currentVertex);
         struct Node* temp = graph->head[currentVertex];
         while(temp){
             int adjVertex = temp->vertex;
-            if(!visited[adjVertex]){
+            if(visited[adjVertex] == 0){
                 visited[adjVertex] = 1;
                 enqueue(queue,adjVertex);
             }
@@ -209,20 +206,20 @@ void DFS(struct Graph* graph, int startVertex, int numVertices, FILE* filename){
     create();
 
     push(startVertex);
-    while(isEmptyStack() == 0){
+    while(stackEmpty() == 0){
         int currentVertex = pTop -> data;
         pop();
-        if(!visited[currentVertex]){
+        if(visited[currentVertex] == 0){
+            fprintf(filename,"%d\n",currentVertex);
             visited[currentVertex] = 1;
-            fprintf(filename,"%d",currentVertex);
         }
         struct Node* temp = graph->rear[currentVertex];
         while(temp){
             int adjVertex = temp->vertex;
-            if(!visited[adjVertex]){
+            if(visited[adjVertex] == 0){
                 push(adjVertex);
             }
-            temp = temp->next;
+            temp = temp->prev;
         }
     }
     free(visited);
@@ -234,6 +231,8 @@ void DFS(struct Graph* graph, int startVertex, int numVertices, FILE* filename){
 
 /**
  * @brief Hàm xóa đỉnh khỏi đồ thị  
+ * 1. Xóa các cạnh kề của đỉnh đó
+ * 2. Xóa đỉnh đó
  * 
  * @param graph Đồ thị
  * @param vertex Đỉnh cần xóa
@@ -308,8 +307,3 @@ int checkCover(struct Graph* graph, FILE* filename){
     }
     return 1;
 }
-
-
-
-
-

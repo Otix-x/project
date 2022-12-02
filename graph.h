@@ -18,7 +18,7 @@ struct Graph* createGraph(int numVertices);
 void addEdge(struct Graph* graph,int src,int dest);
 int countVertices(char *filename);
 void buildGraph(struct Graph* graph,FILE *filename);
-void printGraph(struct Graph* graph, FILE* f);
+void printGraph(struct Graph* graph, FILE* filename);
 void BFS(struct Graph* graph,int startVertex, int numVertices, FILE* f);
 void DFS(struct Graph* graph,int startVertex, int numVertices, FILE* f);
 void deleteVertex(struct Graph* graph,int vertex);
