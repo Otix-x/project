@@ -107,7 +107,7 @@ void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
     struct Graph* graph = createGraph(numVertices);
     buildGraph(graph, input_graph);
     printf("Graph created!\n");
-
+    
 
     while(1){
         int choice, start;
@@ -121,6 +121,7 @@ void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
                 scanf("%d",&start);
                 BFS(graph, start, numVertices, f1);
                 printf("BFS done!\n");
+                sub_menu("--");
                 break;
             }
             case 2:{
@@ -130,6 +131,7 @@ void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
                 scanf("%d",&start);
                 DFS(graph, start, numVertices, f2);
                 printf("DFS done!\n");
+                sub_menu("--");
                 break;
             }
             case 3:{
@@ -148,6 +150,7 @@ void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
                 else{
                     printf("The graph is not a vertex cover\n");
                 }
+                sub_menu("--");
                 free(temp_graph);
 
                 break;
@@ -158,6 +161,7 @@ void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
                 printf("Printing graph...\n");
                 printGraph(graph, f4);
                 printf("Graph printed!\n");
+                sub_menu("--");
                 break;
             }
             default:
