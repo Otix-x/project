@@ -1,23 +1,40 @@
+/**
+ * @file graph.c 
+ * @author Nguyễn Xuân Phước - 20205232 (phuoc.nx205232@sis.hust.edu.vn)
+ * @brief Định nghĩa các hàm thao tác với đồ thị
+ * @date 2022-12-07
+ * 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "graph.h"
 #include "stack.h"
 #include "queue.h"
 
-// Hàm bỏ qua các dòng dữ liệu không cần thiết
+/**
+ * @brief Hàm bỏ qua các dòng dữ liệu không cần thiết
+ * 
+ * @param f 
+ * @return int 
+ */
 int ignoreLine(FILE *f){
     int c;
-    while(c = fgetc(f), c != '\n' && c != EOF);
-    return c;
+    while(c = fgetc(f), c != '\n' && c != EOF); // Bỏ qua các ký tự đến khi gặp ký tự xuống dòng hoặc ký tự EOF
+    return c; // Trả về ký tự xuống dòng hoặc ký tự EOF
 }
 
-// Hàm bỏ qua các dòng comment
-void ignoreComments(FILE *f){
+/**
+ * @brief Hàm bỏ qua các dòng comment
+ * 
+ * @param f 
+ */
+void ignoreComments(FILE *f){ // Bỏ qua các dòng comment
     int c;
-    while(c = fgetc(f), c == '#'){
+    while(c = fgetc(f), c == '#'){ // Nếu gặp ký tự # thì bỏ qua dòng đó
         ignoreLine(f);
     }
-    ungetc(c,f);
+    ungetc(c,f); // Trả lại ký tự đọc được vào file
 }
 
 /**
@@ -29,11 +46,11 @@ void ignoreComments(FILE *f){
  * @param vertex Giá trị của node mới
  * @return struct Node* 
  */
-struct Node* creatNode(int vertex){
-    struct Node* newNode = malloc(sizeof(struct Node));
-    newNode->vertex = vertex;
-    newNode->next = NULL;
-    newNode->prev = NULL;
+struct Node* creatNode(int vertex){ // Tạo một node mới với giá trị là vertex
+    struct Node* newNode = malloc(sizeof(struct Node)); // Cấp phát bộ nhớ cho node mới
+    newNode->vertex = vertex; // Gán giá trị cho node mới
+    newNode->next = NULL; // Khởi tạo node mới không có node kế tiếp
+    newNode->prev = NULL; // Khởi tạo node mới không có node trước đó
     return newNode;
 }
 
@@ -47,14 +64,14 @@ struct Node* creatNode(int vertex){
  * @param numVertices Số đỉnh của đồ thị mới
  * @return struct Graph* 
  */
-struct Graph* createGraph(int numVertices){
-    struct Graph* graph = malloc(sizeof(struct Graph));
-    graph->numVertices = numVertices;
-    graph->head = malloc(numVertices*sizeof(struct Node*));
-    graph->rear = malloc(numVertices*sizeof(struct Node*));
-    for(int i=0;i<numVertices;++i){
-        graph->head[i] = NULL;
-        graph->rear[i] = NULL;
+struct Graph* createGraph(int numVertices){ // Tạo một đồ thị mới với số đỉnh là numVertices
+    struct Graph* graph = malloc(sizeof(struct Graph)); // Cấp phát bộ nhớ cho đồ thị mới
+    graph->numVertices = numVertices; // Khởi tạo số đỉnh cho đồ thị mới
+    graph->head = malloc(numVertices*sizeof(struct Node*)); // Cấp phát bộ nhớ cho node đầu tiên của mỗi đỉnh
+    graph->rear = malloc(numVertices*sizeof(struct Node*)); // Cấp phát bộ nhớ cho node cuối cùng của mỗi đỉnh
+    for(int i=0;i<numVertices;++i){ 
+        graph->head[i] = NULL; // Khởi tạo giá trị cho node đầu tiên của mỗi đỉnh
+        graph->rear[i] = NULL; // Khởi tạo giá trị cho node cuối cùng của mỗi đỉnh
     }
     return graph;
 }
@@ -72,14 +89,14 @@ struct Graph* createGraph(int numVertices){
  * @param dest Đỉnh kết thúc
  */
  
-void addEdge(struct Graph* graph,int src,int dest){
-    struct Node* newNode = creatNode(dest);
-    if(graph->head[src]==NULL){
-        graph->head[src] = newNode;
+void addEdge(struct Graph* graph,int src,int dest){ // Thêm cạnh vào đồ thị graph từ đỉnh src đến đỉnh dest
+    struct Node* newNode = creatNode(dest); // Tạo một node mới với giá trị là dest
+    if(graph->head[src]==NULL){ // Nếu đỉnh src chưa có cạnh nào đi ra thì node mới sẽ là cạnh đầu tiên của đỉnh src
+        graph->head[src] = newNode; // Cập nhật node đầu tiên của đỉnh src
         graph->rear[src] = newNode;
     }
-    else{
-        newNode->prev = graph->rear[src];
+    else{                       // Nếu đỉnh src đã có cạnh đi ra thì node mới sẽ là cạnh cuối cùng của đỉnh src
+        newNode->prev = graph->rear[src]; // Cập nhật node cuối cùng của đỉnh src
         graph->rear[src]->next = newNode;
         graph->rear[src] = newNode;
     }
@@ -95,13 +112,15 @@ void addEdge(struct Graph* graph,int src,int dest){
  * @param filename Tên file chứa đồ thị
  * @return int 
  */
-int countVertices(char filename[]){
+int countVertices(char filename[]){ // Đếm số đỉnh của đồ thị từ file filename
     FILE *f = fopen(filename,"r");
     ignoreComments(f);
-    int numVertices;
-    fscanf(f,"%d",&numVertices);
+    int numVertices;                
+    fscanf(f,"%d",&numVertices);  // Đọc số đỉnh đầu tiên của đồ thị
     int max = numVertices;
-    while(fscanf(f,"%d",&numVertices)==1) max = numVertices > max ? numVertices : max; 
+    while(fscanf(f,"%d",&numVertices)==1){ // Đọc các đỉnh tiếp theo
+        max = numVertices > max ? numVertices : max; // Tìm đỉnh có giá trị lớn nhất
+    } 
     fclose(f);
     return max+1;   // Trả về số đỉnh của đồ thị + 1 (vì đỉnh bắt đầu từ 0)
 }
@@ -114,13 +133,11 @@ int countVertices(char filename[]){
  * @param graph Đồ thị
  * @param f File chứa đồ thị
  */
- 
-void buildGraph(struct Graph* graph, FILE* f){
+void buildGraph(struct Graph* graph, FILE* f){  // Xây dựng đồ thị vô hướng từ file f
     ignoreComments(f);
     int src, dest;
-    while(fscanf(f,"%d",&src) == 1, fscanf(f,"%d",&dest) == 1){
-        addEdge(graph,src,dest);
-        // addEdge(graph,dest,src);
+    while(fscanf(f,"%d",&src) == 1, fscanf(f,"%d",&dest) == 1){ // Duyệt file f để lấy giá trị của các cạnh của đồ thị
+        addEdge(graph,src,dest);    // Thêm cạnh vào đồ thị
     }
     fclose(f);
 }
@@ -131,13 +148,13 @@ void buildGraph(struct Graph* graph, FILE* f){
  * @param graph Đồ thị
  * @param filename Tên file chứa đồ thị
  */
-void printGraph(struct Graph* graph, FILE* filename){
-    for(int vertex=0; vertex < graph->numVertices; ++vertex){
-        struct Node* temp = graph->head[vertex];
-        fprintf(filename,"\nVertex %d: ",vertex);
-        while(temp){
-            fprintf(filename,"%d ",temp->vertex);
-            temp = temp->next;
+void printGraph(struct Graph* graph, FILE* filename){ // In đồ thị ra file filename
+    for(int vertex=0; vertex < graph->numVertices; ++vertex){   // Duyệt các đỉnh của đồ thị
+        struct Node* temp = graph->head[vertex]; // Lấy node đầu tiên của đỉnh
+        fprintf(filename,"\nVertex %d: ",vertex); // In đỉnh ra file filename
+        while(temp){    // Duyệt các node của đỉnh 
+            fprintf(filename,"%d ",temp->vertex); // In các node ra file filename
+            temp = temp->next; // Lấy node tiếp theo
         }
     }
 }
@@ -158,29 +175,28 @@ void printGraph(struct Graph* graph, FILE* filename){
  * @param numVertices Số đỉnh của đồ thị
  * @param f File chứa các đỉnh đã được duyệt
  */
+void BFS(struct Graph* graph, int starVertex, int numVertices, FILE* filename){
+    int *visited;   // Mảng lưu trữ các đỉnh đã được duyệt
+    visited = (int*)calloc(numVertices,sizeof(int)); // Khởi tạo mảng visited
+    struct Queue* queue = createQueue(); // Khởi tạo hàng đợi QUEUE
 
-void BFS(struct Graph* graph, int startVertex, int numVertices, FILE* filename){
-    int *visited;
-    visited = (int*)calloc(numVertices,sizeof(int));
-    struct Queue* queue = createQueue();
-
-    visited[startVertex] = 1;
-    enqueue(queue,startVertex);
-    while(!queueEmpty(queue)){
-        int currentVertex = dequeue(queue);
-        fprintf(filename,"%d ",currentVertex);
-        struct Node* temp = graph->head[currentVertex];
-        while(temp){
-            int adjVertex = temp->vertex;
-            if(visited[adjVertex] == 0){
-                visited[adjVertex] = 1;
-                enqueue(queue,adjVertex);
+    visited[starVertex] = 1;    // Đánh dấu đỉnh bắt đầu đã được duyệt
+    enqueue(queue,starVertex);  // Thêm đỉnh bắt đầu vào QUEUE
+    while(!queueEmpty(queue)){  // Duyệt QUEUE cho đến khi QUEUE rỗng
+        int currentVertex = dequeue(queue);     // Lấy đỉnh đầu tiên ra khỏi QUEUE
+        fprintf(filename,"%d\n",currentVertex); // In đỉnh ra file f
+        struct Node* temp = graph->head[currentVertex];     // Lấy node đầu tiên của đỉnh
+        while(temp){    // Duyệt các node của đỉnh
+            int adjVertex = temp->vertex;   // Lấy đỉnh kề của đỉnh vừa lấy ra khỏi QUEUE
+            if(visited[adjVertex] == 0){    // Nếu đỉnh kề chưa được duyệt thì thêm vào QUEUE
+                visited[adjVertex] = 1;     // Đánh dấu đỉnh kề đã được duyệt
+                enqueue(queue,adjVertex);   // Thêm đỉnh kề vào QUEUE
             }
-            temp = temp->next;
+            temp = temp->next; // Lấy node tiếp theo
         }
-        free(visited);
-        fclose(filename);
     }
+    free(visited);  // Giải phóng mảng visited
+    fclose(filename); // Đóng file filename
 }
 
 /**
@@ -201,28 +217,28 @@ void BFS(struct Graph* graph, int startVertex, int numVertices, FILE* filename){
  * 
  */
 void DFS(struct Graph* graph, int startVertex, int numVertices, FILE* filename){
-    int *visited;
-    visited = (int*)calloc(numVertices, sizeof(int));
-    create();
+    int *visited;   // Mảng lưu trữ các đỉnh đã được duyệt
+    visited = (int*)calloc(numVertices, sizeof(int)); // Khởi tạo mảng visited
+    create(); // Khởi tạo ngăn xếp STACK
 
-    push(startVertex);
-    while(stackEmpty() == 0){
-        int currentVertex = pTop -> data;
+    push(startVertex);  // Thêm đỉnh bắt đầu vào STACK
+    while(stackEmpty() == 0){   // Duyệt STACK cho đến khi STACK rỗng
+        int currentVertex = pTop -> data;   // Lấy đỉnh đầu tiên ra khỏi STACK
         pop();
-        if(visited[currentVertex] == 0){
+        if(visited[currentVertex] == 0){    // Nếu đỉnh đó chưa được duyệt thì in ra file f 
             fprintf(filename,"%d\n",currentVertex);
-            visited[currentVertex] = 1;
+            visited[currentVertex] = 1;     // Đánh dấu đỉnh đã được duyệt
         }
-        struct Node* temp = graph->rear[currentVertex];
-        while(temp){
-            int adjVertex = temp->vertex;
-            if(visited[adjVertex] == 0){
-                push(adjVertex);
+        struct Node* temp = graph->rear[currentVertex];     // Lấy node cuối cùng của đỉnh
+        while(temp){    // Duyệt các node của đỉnh
+            int adjVertex = temp->vertex;   // Lấy đỉnh kề của đỉnh vừa lấy ra khỏi STACK
+            if(visited[adjVertex] == 0){   // Nếu đỉnh kề chưa được duyệt thì thêm vào STACK
+                push(adjVertex);    // Thêm đỉnh kề vào STACK
             }
-            temp = temp->prev;
+            temp = temp->prev;  // Lấy node trước đó
         }
     }
-    free(visited);
+    free(visited); // Giải phóng mảng visited
     fclose(filename);
 }
 
@@ -238,72 +254,76 @@ void DFS(struct Graph* graph, int startVertex, int numVertices, FILE* filename){
  * @param vertex Đỉnh cần xóa
  * 
  */
-void deleteVertex(struct Graph* graph, int vertex){
-    struct Node* temp = graph -> head[vertex];
-    while(temp){
-        int currentVertex = temp->vertex;
-        struct Node* subVertex = graph -> head[currentVertex];
-        if(subVertex -> vertex == vertex){
-            if (subVertex -> next){
-                graph -> head[currentVertex] -> vertex = subVertex -> next -> vertex;
-                graph -> head[currentVertex] = subVertex -> next ;
-                free(subVertex);
+void deleteVertex(struct Graph* graph, int vertex){     // Xóa đỉnh khỏi đồ thị
+    struct Node* temp = graph -> head[vertex];  // Lấy node đầu tiên của đỉnh
+    while(temp){    // Duyệt các node của đỉnh
+        int currentVertex = temp->vertex;   // Lấy đỉnh kề của đỉnh đó
+        struct Node* subVertex = graph -> head[currentVertex];   // Lấy node đầu tiên của đỉnh kề
+        if(subVertex -> vertex == vertex){  // Nếu đỉnh kề đầu tiên của đỉnh kề là đỉnh cần xóa
+            if (subVertex -> next){     // Nếu đỉnh kề đầu tiên của đỉnh kề có node tiếp theo
+                graph -> head[currentVertex] -> vertex = subVertex -> next -> vertex;   // Gán giá trị của node tiếp theo cho node đầu tiên
+                graph -> head[currentVertex] = subVertex -> next ;  // Gán node tiếp theo cho node đầu tiên
+                free(subVertex);    // Giải phóng node đầu tiên
             }
-            else{
-                graph -> head[currentVertex] = NULL;
-                free(subVertex);
+            else{   // Nếu đỉnh kề đầu tiên của đỉnh kề không có node tiếp theo
+                graph -> head[currentVertex] = NULL;    // Gán node đầu tiên bằng NULL
+                free(subVertex);    // Giải phóng node đầu tiên
             }
-            temp = temp -> next;
-            continue;
+            temp = temp -> next;    // Lấy node tiếp theo
+            continue;   // Bỏ qua các câu lệnh phía dưới
         }
 
-        while(subVertex -> next){
-            struct Node* nextVertex = subVertex -> next;
-            if(subVertex -> next -> next){
-                if(nextVertex -> vertex == vertex){
-                    subVertex -> next -> vertex = nextVertex -> next -> vertex;
-                    subVertex -> next = nextVertex -> next;
-                    free(nextVertex);
-                    break;
+        while(subVertex -> next){   // Duyệt các node của đỉnh kề
+            struct Node* nextVertex = subVertex -> next;    // Lấy node tiếp theo của đỉnh kề
+            if(subVertex -> next -> next){  // Nếu node tiếp theo của đỉnh kề có node tiếp theo
+                if(nextVertex -> vertex == vertex){     // Nếu node tiếp theo của đỉnh kề là đỉnh cần xóa
+                    subVertex -> next -> vertex = nextVertex -> next -> vertex;     // Gán giá trị của node tiếp theo của node tiếp theo cho node tiếp theo
+                    subVertex -> next = nextVertex -> next;     // Gán node tiếp theo của node tiếp theo cho node tiếp theo
+                    free(nextVertex);   // Giải phóng node tiếp theo
+                    break;  
                 }
             }
             else{
-                if(nextVertex -> vertex == vertex){
-                    subVertex -> next = NULL;
-                    free(nextVertex);
+                if(nextVertex -> vertex == vertex){     // Nếu node tiếp theo của đỉnh kề là đỉnh cần xóa
+                    subVertex -> next = NULL;   // Gán node tiếp theo của đỉnh kề bằng NULL
+                    free(nextVertex);   // Giải phóng node tiếp theo của đỉnh kề
                     break;
                 }
             }
-            subVertex = subVertex -> next;
+            subVertex = subVertex -> next;  // Lấy node tiếp theo của đỉnh kề
         }
-        temp = temp -> next;
+        temp = temp -> next;    // Lấy node tiếp theo của đỉnh
     }
-    graph -> head[vertex] = NULL;
+    graph -> head[vertex] = NULL;   // Gán node đầu tiên của đỉnh cần xóa bằng NULL
 }
 
 /**
  * @brief Hàm kiểm tra đỉnh bao phủ đồ thị
+ * 1. Xóa các đỉnh đã được duyệt khỏi đồ thị
+ * 2. Kiểm tra đồ thị còn đỉnh nào chưa được duyệt hay không
+ *      2.1 Nếu còn thì đồ thị không bao phủ
+ *      2.2 Nếu không còn thì đồ thị bao phủ
  * 
  * @param graph Đồ thị
  * @param filename File chứa các đỉnh cần kiểm tra
  */
-int checkCover(struct Graph* graph, FILE* filename){
+int checkCover(struct Graph* graph, FILE* filename){    // Hàm kiểm tra đỉnh bao phủ đồ thị
     ignoreComments(filename);
     char c;
     int vertex;
-    while((c = getc(filename)) != EOF){
-        if( c == 'v') continue;
-        else{
-            fscanf(filename,"%d",&vertex);
-            deleteVertex(graph,vertex);
-            c = getc(filename);
+    while((c = getc(filename)) != EOF){     // Duyệt các đỉnh trong file
+        if( c == 'v') continue;     // Bỏ qua các đỉnh đã được duyệt
+        else{   // Nếu đỉnh chưa được duyệt
+            fscanf(filename,"%d",&vertex);  // Đọc giá trị của đỉnh
+            deleteVertex(graph,vertex);     // Xóa đỉnh khỏi đồ thị
+            c = getc(filename);             // Lấy ký tự tiếp theo
         }
     }
     fclose(filename);
 
-    for(int i = 0; i < graph ->numVertices; ++i){
-        if (graph -> head[i] != NULL) 
-        return 0;
+    for(int i = 0; i < graph ->numVertices; ++i){  // Duyệt các đỉnh trong đồ thị
+        if (graph -> head[i] != NULL)   // Nếu đỉnh chưa được duyệt
+        return 0;       // Đồ thị không bao phủ
     }
-    return 1;
+    return 1;   // Đồ thị bao phủ
 }
