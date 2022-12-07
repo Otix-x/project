@@ -11,23 +11,23 @@ void buildGraph(struct Graph* graph, FILE* f);
 
 // Menu chính của chương trình
 void menu(){
-    printf("\n\n======================= MENU PROGRAM =======================\n");
-    printf("1. Road network of California\n");
-    printf("2. Road network of Pennsylvania\n");
-    printf("3. Road network of Texas\n");
-    printf("Press other key to exit the program\n");
+    printf("\n\n======================= MENU PROGRAM ========================\n");
+    printf("\t1. Road network of California\n");
+    printf("\t2. Road network of Pennsylvania\n");
+    printf("\t3. Road network of Texas\n");
+    printf("\tPress other key to exit the program\n");
     printf("=============================================================\n");
 }
 
 // Menu lựa chọn thuật toán
 void sub_menu(char filechoice[]){
-    printf("\n\n>>>>>>>>>>>>>>>>>>>>>>> SUB MENU <<<<<<<<<<<<<<<<<<<<<<<<<<\n");
-    printf("----------------------- %s -----------------------\n",filechoice);
-    printf("1. Breadth First Search\n");
-    printf("2. Depth First Search\n");
-    printf("3. Check Vertex Cover\n");
-    printf("4. Print Graph\n");
-    printf("Press other key to back to MAIN MENU\n");
+    printf("\n\n\t>>>>>>>>>>>>>>>>>>>>>>> SUB MENU <<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+    printf("-----------------------%s-----------------------\n",filechoice);
+    printf("\t1. Breadth First Search\n");
+    printf("\t2. Depth First Search\n");
+    printf("\t3. Check Vertex Cover\n");
+    printf("\t4. Print Graph\n");
+    printf("\tPress other key to back to MAIN MENU\n\n\n");
 }
 
 
@@ -41,7 +41,7 @@ int main(){
 void main_thread(){
     menu();
     while(1){
-        printf("Enter your choice: ");
+        printf("\tEnter your choice: ");
         int choice ;
         scanf("%d", &choice);
         switch(choice){
@@ -76,7 +76,7 @@ void main_thread(){
                 sub_main(input_file, f1, f2, f3, f4);
             } break;
             default: {
-                printf("Thank you for using our program. Goodbye!\n");
+                printf("Thank you for using our program\n\tGOODBYE!\n");
                 exit(1);
                 break;
             }
@@ -102,36 +102,36 @@ void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
     }
 
     // create a graph
-    printf("Creating graph...\n");
+    printf("\tCreating graph...\n");
     int numVertices = countVertices(input_file);
     struct Graph* graph = createGraph(numVertices);
     buildGraph(graph, input_graph);
-    printf("Graph created!\n");
+    printf("\tGraph created!\n");
     
 
     while(1){
         int choice, start;
-        printf("Enter your choice: ");
+        printf("\tEnter your choice: ");
         scanf("%d", &choice);
         switch(choice){
             case 1:{
                 // Breadth First Search
-                printf("Breadth First Search\n");
-                printf("Start vertex: \n");
+                printf("\n~~~~~~~~~~~~~~~BREADTH FIRST SEARCH~~~~~~~~~~~~~~~\n");
+                printf("\tStart vertex: ");
                 scanf("%d",&start);
                 BFS(graph, start, numVertices, f1);
-                printf("BFS done!\n");
-                sub_menu("--");
+                printf("\tDONE!\n\tPlease open outputBFS file to show the result \n");
+                sub_menu("------------------------------");
                 break;
             }
             case 2:{
                 // Depth First Search
-                printf("Depth First Search\n");
-                printf("Start vertex: \n");
+                printf("\n~~~~~~~~~~~~~~~DEPTH FIRST SEARCH~~~~~~~~~~~~~~~\n");
+                printf("\tStart vertex: ");
                 scanf("%d",&start);
                 DFS(graph, start, numVertices, f2);
-                printf("DFS done!\n");
-                sub_menu("--");
+                printf("\tDONE!\n\tPlease open outputDFS file to show the result \n");
+                sub_menu("------------------------------");
                 break;
             }
             case 3:{
@@ -140,17 +140,17 @@ void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
                     printf("\nError: Unable to open the file");
                     exit(1);
                 }
-                printf("Check Vertex Cover\n");
+                printf("~~~~~~~~~~~~~~~CHECK VERTEX COVER~~~~~~~~~~~~~~~\n");
                 FILE* temp_input_file = fopen(input_file, "r");
                 struct Graph* temp_graph = createGraph(numVertices);
                 buildGraph(temp_graph, temp_input_file);                
                 if (checkCover(temp_graph, f3)){
-                    printf("The graph is a vertex cover\n");
+                    printf("\tThe graph is a vertex cover\n");
                 }
                 else{
-                    printf("The graph is not a vertex cover\n");
+                    printf("\tThe graph is not a vertex cover\n");
                 }
-                sub_menu("--");
+                sub_menu("------------------------------");
                 free(temp_graph);
 
                 break;
@@ -158,10 +158,10 @@ void sub_main(char input_file[], FILE *f1, FILE *f2, FILE *f3, FILE *f4){
                 
             case 4:{
                 // Print Graph
-                printf("Printing graph...\n");
+                printf("\tPrinting graph...\n");
                 printGraph(graph, f4);
-                printf("Graph printed!\n");
-                sub_menu("--");
+                printf("\tGraph printed!\n\tPlease open outputGraph file to show the result \n");
+                sub_menu("------------------------------");
                 break;
             }
             default:
