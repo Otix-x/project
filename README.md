@@ -16,4 +16,14 @@
     + Kiểm tra tập đỉnh bao phủ (Vertex Cover): https://drive.google.com/drive/folders/12fuNvia6YAJzyonnT_PBu2pYb6_QsNoy
 
 ## QUY TRÌNH THỰC HIỆN 
-### Xây dựng 
+### Xây dựng các cấu trúc dữ liệu 
+#### Cấu trúc dữ liệu hàng đợi QUEUE
+
+#### Cấu trúc dữ liệu ngăn xếp STACK
+
+### Xây dựng các chức năng chính của chương trình
+#### Giải thuật tìm kiếm trên đồ thị theo chiều rộng (Breadth First Search)
+
+#### Giải thuật tìm kiếm trên đồ thị theo chiều sâu (Depth First Search)
+
+#### Bài toán phủ đỉnh (Vertex Cover)
